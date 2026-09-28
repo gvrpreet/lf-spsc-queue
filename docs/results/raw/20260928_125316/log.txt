@@ -1,0 +1,6 @@
+# tsc: 3.819 GHz, invariant=yes, rdtsc min delta=1 cycles, lfence+rdtsc=38 cycles (10.0 ns)
+mutex        samples=5000000 interval=1000ns cpus=2,4 | p50=542 p90=2477 p99=28313 p99.9=347229 p99.99=635405 max=1448008 (ns) negative=0
+# tsc: 3.823 GHz, invariant=yes, rdtsc min delta=1 cycles, lfence+rdtsc=38 cycles (9.9 ns)
+spsc         samples=5000000 interval=1000ns cpus=2,4 | p50=114 p90=243 p99=5497 p99.9=146212 p99.99=573018 max=829298 (ns) negative=0
+mutex        reps=5 seconds=3.0 cpus=2,4 | median=6.15 Mops/s min=6.10 max=6.20 consumer_cpu=91%
+spsc         reps=5 seconds=3.0 cpus=2,4 | median=24.28 Mops/s min=23.73 max=25.12 consumer_cpu=98%
