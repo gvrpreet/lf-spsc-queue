@@ -1,0 +1,33 @@
+name: ci
+on: [push, pull_request]
+
+env:
+  # Keep stress tests short on shared CI runners; locally the defaults are much larger.
+  SPSC_STRESS_ITEMS: "500000"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [debug, release, asan, tsan]
+        cxx: [g++, clang++]
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake --preset ${{ matrix.preset }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DSPSC_FETCH_LOB_ENGINE=ON
+      - run: cmake --build build/${{ matrix.preset }} -j
+      - run: ctest --test-dir build/${{ matrix.preset }} --output-on-failure
+
+  # Short mutation-testing smoke run: a relaxed publish (caught only by ThreadSanitizer on x86)
+  # and a missing wake-up (caught as a stall). The fence-removal mutations depend on a rare
+  # store-buffer race and are left to the full local run (scripts/mutation_test.sh).
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake --preset debug && cmake --build build/debug -j --target test_wraparound_stress
+      - run: |
+          out="$(MUT_RELEASE_ITEMS=2000000 MUT_TSAN_ITEMS=100000 scripts/mutation_test.sh publish_relaxed park_no_notify)"
+          echo "$out"
+          ! echo "$out" | grep -qE "not caught *\| *not caught|ERROR|BUILD FAILED"
