@@ -1,0 +1,4 @@
+mutex-fit    bursts=1000x4096 spacing=20ns gap=1000us service=0ns | p50=401286 p90=582922 p99=927876 p99.9=1781894 max=2084871 (ns) | max_depth=8088 full_events=0 rejected=0
+mutex-overflow bursts=20x200000 spacing=20ns gap=50000us service=100ns | p50=477779169 p90=852067741 p99=970266613 p99.9=975760095 max=976451185 (ns) | max_depth=65536 full_events=1192330 rejected=7
+spsc-fit     bursts=1000x4096 spacing=20ns gap=1000us service=0ns | p50=40943 p90=115972 p99=626456 p99.9=1784018 max=1866655 (ns) | max_depth=8129 full_events=0 rejected=0
+spsc-overflow bursts=20x200000 spacing=20ns gap=50000us service=100ns | p50=12776792 p90=22958317 p99=25951501 p99.9=28668716 max=29142352 (ns) | max_depth=65536 full_events=2040145 rejected=0

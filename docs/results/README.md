@@ -7,22 +7,26 @@ Every file here is produced by a script in `scripts/`.
 
 | Path | Contents | Produced by |
 |------|----------|-------------|
-| `raw/<timestamp>/env.txt` | Machine, kernel, compiler, git revision, pinning | `scripts/run_bench.sh` |
-| `raw/<timestamp>/latency.csv` | Latency percentile summary per queue | `bench_latency --csv` |
-| `raw/<timestamp>/latency_curve_*.csv` | Full percentile curve (for plotting) | `bench_latency --curve` |
-| `raw/<timestamp>/throughput.csv` | Throughput median/min/max per queue | `bench_throughput --csv` |
-| `baseline_vs_spsc.md` | Headline comparison against the mutex baseline | Curated from `raw/` |
-| `mutation_testing.md` | Which injected ordering bugs the test suite detects | `scripts/mutation_test.sh` |
+| [`ablations.md`](ablations.md) | Every queue configuration vs. the mutex baseline: latency, throughput, analysis | `scripts/run_experiments.sh ablations` |
+| [`burst.md`](burst.md) | Bursty load, including bursts larger than the queue | `scripts/run_experiments.sh burst` |
+| [`pipeline.md`](pipeline.md) | End-to-end order pipeline (intake to acknowledgement) | `scripts/run_experiments.sh pipeline` |
+| [`mutation_testing.md`](mutation_testing.md) | Which injected bugs each verification method catches | `scripts/mutation_test.sh` |
+| [`baseline_vs_spsc.md`](baseline_vs_spsc.md) | First comparison, before the layout optimizations (historical) | `scripts/run_bench.sh` |
+| `plots/*.svg` | Charts used in the README and in `ablations.md` | `scripts/plot_results.py` |
+| `raw/<timestamp>_<suite>/` | Raw CSVs, logs, and `env.txt` (machine, kernel, compiler, git revision, pinning) | the scripts above |
 
 ## Methodology
 
 - Release build, `-O3 -march=native`, GCC 13.3.
 - Producer and consumer pinned to different physical cores (CPU 2 and CPU 4)
   unless stated otherwise.
-- **Latency:** one-way push-to-pop time measured with the invariant TSC, under
-  paced load (one event per microsecond). The timestamp is taken once, before the
-  first push attempt, so time spent blocked on a full queue or a held lock is
-  included. 5,000,000 samples after 500,000 warm-up events.
+- **Latency:** one-way push-to-pop time measured with the invariant TSC
+  (`lfence; rdtsc` on both sides), under paced load (one event per microsecond).
+  The timestamp is taken once, before the first push attempt, so time spent
+  blocked on a full queue or a held lock is included. 5,000,000 samples after
+  500,000 warm-up events; median of three runs.
+- **Bursty load:** latency is measured from each event's *intended* send time in a
+  precomputed schedule, which avoids coordinated omission.
 - **Throughput:** saturating producer, 3-second runs, 5 repetitions after a
   discarded warm-up run. Reported as median with min/max. Every event is
   verified by checksum.

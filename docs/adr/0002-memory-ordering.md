@@ -48,4 +48,10 @@ The full happens-before argument is in [DESIGN.md, section 4](../design/DESIGN.m
 
 - The code is correct on weakly ordered architectures (ARM, POWER) without modification.
 - There is no runtime cost on x86 compared with relaxed loads.
-- Ablation A5 in the design doc quantifies the cost of `seq_cst` as a comparison point.
+- Ablation A5 ([results](../results/ablations.md)) compared `seq_cst` everywhere.
+  Hand-off latency was indistinguishable (p50 103 vs. 98 ns). Saturated throughput
+  *doubled*, but not because `seq_cst` is cheaper. The locked `xchg` on the
+  consumer's `tail_` store slowed the consumer enough that it stopped repeatedly
+  catching up with the producer and re-reading its index. The finding argues for
+  consumer back-off or batching when the queue is empty. It does not argue for
+  stronger orderings, so this decision stands.

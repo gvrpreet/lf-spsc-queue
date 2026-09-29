@@ -17,7 +17,9 @@ if(SPSC_SANITIZER STREQUAL "address")
   add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -g)
   add_link_options(-fsanitize=address,undefined)
 elseif(SPSC_SANITIZER STREQUAL "thread")
-  add_compile_options(-fsanitize=thread -g)
+  # TSan does not model standalone fences (-Wtsan). The fences in SpinThenPark are
+  # verified by the ping-pong stress test instead; see docs/results/mutation_testing.md.
+  add_compile_options(-fsanitize=thread -g $<$<CXX_COMPILER_ID:GNU>:-Wno-tsan>)
   add_link_options(-fsanitize=thread)
 endif()
 

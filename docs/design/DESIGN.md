@@ -21,13 +21,21 @@
 ## 2. Data layout
 
 ```cpp
-template <typename T, std::size_t Capacity>  // Capacity = 2^k
+template <typename T, std::size_t Capacity, Tuning Tune = Tuning{}>  // Capacity = 2^k
 class SpscQueue {
-    std::atomic<uint64_t> head_;   // next slot to write; written by the producer only
-    std::atomic<uint64_t> tail_;   // next slot to read;  written by the consumer only
-    T buffer_[Capacity];           // T = OrderEvent, 64 bytes, stored by value
+    alignas(64) std::atomic<uint64_t> head_;  // next slot to write; written by the producer only
+    uint64_t cached_tail_;                     // producer's private copy of tail_
+    alignas(64) std::atomic<uint64_t> tail_;  // next slot to read; written by the consumer only
+    uint64_t cached_head_;                     // consumer's private copy of head_
+    alignas(64) T buffer_[Capacity];          // T = OrderEvent, 64 bytes, stored by value
 };
 ```
+
+`Tuning` is a compile-time parameter (a C++20 class-type template argument) that
+switches each optimization on or off, so every variant is the same code, tested by
+the same suite and compared in the same benchmark binary. `if constexpr` removes
+disabled paths, so the knobs cost nothing at runtime. `kBaselineTuning` recreates
+the original unpadded, uncached layout.
 
 - **Naming.** `head_` is the write position (producer) and `tail_` is the read
   position (consumer). Some libraries use the opposite convention.
@@ -37,10 +45,16 @@ class SpscQueue {
 - **One slot per cache line.** `OrderEvent` is exactly 64 bytes and `alignas(64)`,
   so consecutive slots never straddle a line. On Zen 4 with AVX-512 the whole
   slot is copied with one aligned `vmovdqa64` load and one store.
-- **Index placement.** The initial layout (ablation A0) keeps both indices on the
-  same cache line, which is false sharing: every push invalidates the consumer's copy
-  of the line and every pop invalidates the producer's. Section 7 covers the
-  padded and cached-index variants.
+- **Index placement.** Each thread's hot state is exactly one cache line: the
+  index it publishes plus its cached copy of the other index. The baseline layout,
+  with both indices on one line, suffers false sharing: every push invalidates
+  the consumer's copy of the line, and every pop invalidates the producer's.
+- **Cached remote index.** The producer consults its private `cached_tail_` and
+  re-reads the shared `tail_` only when the cache says the queue is full. The
+  consumer does the same with `head_`. A stale cache can only make the queue look
+  fuller (producer) or emptier (consumer) than it really is, never the reverse,
+  so staleness costs a retry but never correctness. Every cached value was itself
+  obtained by an acquire load.
 
 ## 3. Indices: monotonic counters with a power-of-two mask
 
@@ -128,7 +142,11 @@ is considerably more complex and more expensive.
 
 ## 7. Performance experiments
 
-Each change is applied and measured in isolation. Results go in `docs/results/`.
+Each change is applied and measured in isolation. Results and analysis:
+[docs/results/ablations.md](../results/ablations.md). In summary, the tuned layout
+lowers hand-off latency by about 9% at p50 and 15% at p90. Saturated throughput is
+limited by the consumer repeatedly catching up with the producer and re-reading its
+index, not by false sharing.
 
 | ID | Change | Hypothesis |
 |----|--------|------------|
@@ -148,7 +166,9 @@ Each change is applied and measured in isolation. Results go in `docs/results/`.
 | Consumer reads a slot before it is written | `test_wraparound_stress` (sequence number + checksum), ThreadSanitizer |
 | Producer overwrites a slot before it is read | `test_wraparound_stress` with capacities 2-8 |
 | Order lost when the queue is full | `test_full_queue` (throttled consumer; delivered + rejected == sent) |
-| Test suite unable to detect ordering bugs | `scripts/mutation_test.sh` injects ordering bugs and checks that each is caught |
+| Lost wake-up in the park protocol | `test_wait_strategy` ping-pong: one event in flight, randomized gaps; a lost wake-up is a detected stall |
+| Order book corrupted by the matcher | `test_order_book` (price-time priority, randomized invariant checks); the pipeline example re-checks invariants at shutdown |
+| Test suite unable to detect ordering bugs | `scripts/mutation_test.sh` injects 15 ordering and protocol bugs and checks that each is caught |
 
 The stress tests run unpinned, pinned to separate physical cores, and pinned to
 SMT siblings. Tiny capacities force constant full/empty transitions and millions

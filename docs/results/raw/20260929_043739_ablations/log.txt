@@ -1,0 +1,36 @@
+mutex        reps=5 seconds=3.0 cpus=2,4 | median=6.19 Mops/s min=6.12 max=6.45 consumer_cpu=95%
+a0           reps=5 seconds=3.0 cpus=2,4 | median=23.57 Mops/s min=22.97 max=25.34 consumer_cpu=109%
+a1           reps=5 seconds=3.0 cpus=2,4 | median=21.32 Mops/s min=20.12 max=22.25 consumer_cpu=106%
+spsc         reps=5 seconds=3.0 cpus=2,4 | median=22.86 Mops/s min=21.74 max=23.55 consumer_cpu=107%
+pad128       reps=5 seconds=3.0 cpus=2,4 | median=23.23 Mops/s min=21.99 max=24.00 consumer_cpu=107%
+prefetch     reps=5 seconds=3.0 cpus=2,4 | median=23.44 Mops/s min=22.33 max=23.85 consumer_cpu=107%
+seqcst       reps=5 seconds=3.0 cpus=2,4 | median=48.99 Mops/s min=48.10 max=49.21 consumer_cpu=107%
+a0-smt       reps=5 seconds=3.0 cpus=2,3 | median=24.12 Mops/s min=23.98 max=25.81 consumer_cpu=107%
+spsc-smt     reps=5 seconds=3.0 cpus=2,3 | median=23.58 Mops/s min=23.43 max=24.49 consumer_cpu=107%
+mutex            interval=1000ns cpus=2,4 | p50=515 p90=1908 p99=24687 p99.9=151965 p99.99=581720 max=826308 (ns) consumer_cpu=100% negative=0
+a0               interval=1000ns cpus=2,4 | p50=107 p90=244 p99=4950 p99.9=57759 p99.99=434501 max=669803 (ns) consumer_cpu=107% negative=0
+a1               interval=1000ns cpus=2,4 | p50=103 p90=235 p99=4832 p99.9=147827 p99.99=543017 max=711321 (ns) consumer_cpu=107% negative=0
+spsc             interval=1000ns cpus=2,4 | p50=99 p90=207 p99=5123 p99.9=95352 p99.99=547488 max=740991 (ns) consumer_cpu=107% negative=0
+pad128           interval=1000ns cpus=2,4 | p50=103 p90=201 p99=5559 p99.9=92896 p99.99=589387 max=1130677 (ns) consumer_cpu=107% negative=0
+prefetch         interval=1000ns cpus=2,4 | p50=98 p90=165 p99=4242 p99.9=67280 p99.99=394221 max=742957 (ns) consumer_cpu=107% negative=0
+seqcst           interval=1000ns cpus=2,4 | p50=103 p90=206 p99=4711 p99.9=83847 p99.99=627286 max=1155693 (ns) consumer_cpu=107% negative=0
+a0-smt           interval=1000ns cpus=2,3 | p50=107 p90=272 p99=4954 p99.9=99844 p99.99=536654 max=736149 (ns) consumer_cpu=107% negative=0
+spsc-smt         interval=1000ns cpus=2,3 | p50=99 p90=211 p99=4588 p99.9=122917 p99.99=1171493 max=2503346 (ns) consumer_cpu=107% negative=0
+mutex            interval=1000ns cpus=2,4 | p50=504 p90=1495 p99=22756 p99.9=166987 p99.99=576205 max=783567 (ns) consumer_cpu=102% negative=0
+a0               interval=1000ns cpus=2,4 | p50=104 p90=243 p99=4120 p99.9=50810 p99.99=523696 max=736125 (ns) consumer_cpu=107% negative=0
+a1               interval=1000ns cpus=2,4 | p50=103 p90=290 p99=5899 p99.9=116485 p99.99=563755 max=1155524 (ns) consumer_cpu=107% negative=0
+spsc             interval=1000ns cpus=2,4 | p50=98 p90=215 p99=5254 p99.9=471234 p99.99=2978091 max=3470379 (ns) consumer_cpu=107% negative=0
+pad128           interval=1000ns cpus=2,4 | p50=103 p90=207 p99=4625 p99.9=89801 p99.99=596233 max=791550 (ns) consumer_cpu=107% negative=0
+prefetch         interval=1000ns cpus=2,4 | p50=99 p90=169 p99=4334 p99.9=189392 p99.99=1450607 max=2392513 (ns) consumer_cpu=107% negative=0
+seqcst           interval=1000ns cpus=2,4 | p50=98 p90=196 p99=4617 p99.9=103628 p99.99=580820 max=867919 (ns) consumer_cpu=107% negative=0
+a0-smt           interval=1000ns cpus=2,3 | p50=107 p90=248 p99=4297 p99.9=63273 p99.99=565184 max=864548 (ns) consumer_cpu=107% negative=0
+spsc-smt         interval=1000ns cpus=2,3 | p50=99 p90=281 p99=34928 p99.9=2820264 p99.99=6294075 max=7525677 (ns) consumer_cpu=107% negative=0
+mutex            interval=1000ns cpus=2,4 | p50=510 p90=2267 p99=38777 p99.9=258725 p99.99=940782 max=4204658 (ns) consumer_cpu=100% negative=0
+a0               interval=1000ns cpus=2,4 | p50=108 p90=257 p99=5343 p99.9=163122 p99.99=549892 max=1121364 (ns) consumer_cpu=107% negative=0
+a1               interval=1000ns cpus=2,4 | p50=98 p90=271 p99=4752 p99.9=98507 p99.99=2140097 max=2630254 (ns) consumer_cpu=107% negative=0
+spsc             interval=1000ns cpus=2,4 | p50=98 p90=206 p99=4166 p99.9=70572 p99.99=531036 max=832441 (ns) consumer_cpu=107% negative=0
+pad128           interval=1000ns cpus=2,4 | p50=107 p90=187 p99=4736 p99.9=203166 p99.99=656210 max=874330 (ns) consumer_cpu=107% negative=0
+prefetch         interval=1000ns cpus=2,4 | p50=112 p90=190872 p99=9607809 p99.9=11962471 p99.99=12890659 max=36332778 (ns) consumer_cpu=103% negative=0
+seqcst           interval=1000ns cpus=2,4 | p50=32701 p90=746699 p99=5559867 p99.9=13556433 p99.99=13605616 max=13614068 (ns) consumer_cpu=107% negative=0
+a0-smt           interval=1000ns cpus=2,3 | p50=387 p90=423607 p99=2852290 p99.9=6302486 p99.99=8237389 max=8726950 (ns) consumer_cpu=107% negative=0
+spsc-smt         interval=1000ns cpus=2,3 | p50=121 p90=32039 p99=1077329 p99.9=5743526 p99.99=5776228 max=7637134 (ns) consumer_cpu=107% negative=0

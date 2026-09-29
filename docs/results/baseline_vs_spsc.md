@@ -1,7 +1,12 @@
 # SPSC queue vs. mutex baseline
 
-Configuration: `SpscQueue<OrderEvent, 65536>` (baseline layout A0: indices on a
-shared cache line, no cached indices) against `MutexQueue<OrderEvent, 65536>`
+> Historical record (2026-09-28): the first comparison, made before the layout
+> optimizations. The configuration measured here is now available as
+> `SpscQueue<T, N, kBaselineTuning>`. Current figures for every configuration,
+> including the tuned default, are in [ablations.md](ablations.md).
+
+Configuration: `SpscQueue<OrderEvent, 65536>` with the baseline layout A0 (indices
+on a shared cache line, no cached indices) against `MutexQueue<OrderEvent, 65536>`
 (`std::mutex` + `std::queue`). Raw data: [`raw/20260928_125316/`](raw/20260928_125316/).
 
 ## Environment

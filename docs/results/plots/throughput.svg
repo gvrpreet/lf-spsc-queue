@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" width="760" height="392" role="img" aria-labelledby="t d">
+
+<style>
+  svg { --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+        --grid:#e1e0d9; --axis:#c3c2b7; --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; }
+  @media (prefers-color-scheme: dark) {
+    svg { --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
+          --grid:#2c2c2a; --axis:#383835; --s1:#3987e5; --s2:#d95926; --s3:#199e70; }
+  }
+  .bg { fill: var(--surface); }
+  .title { fill: var(--ink); font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .subtitle { fill: var(--ink2); font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .tick { fill: var(--muted); font: 11px system-ui, -apple-system, "Segoe UI", sans-serif; font-variant-numeric: tabular-nums; }
+  .label { fill: var(--ink2); font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .value { fill: var(--ink); font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; font-variant-numeric: tabular-nums; }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .axis { stroke: var(--axis); stroke-width: 1; }
+  .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .whisker { stroke: var(--ink2); stroke-width: 1.5; }
+</style>
+
+<rect class="bg" width="760" height="392" rx="8"/>
+<title id="t">Sustained throughput by configuration</title>
+<desc id="d">Median million events per second over repeated runs, with min-max range.</desc>
+<text class="title" x="24" y="28">Sustained throughput by configuration</text>
+<text class="subtitle" x="24" y="46">Saturating producer, 64-byte events, median of runs (whisker: min-max). Higher is better.</text>
+<line class="grid" x1="240.0" x2="240.0" y1="58" y2="358"/>
+<text class="tick" x="240.0" y="374" text-anchor="middle">0M/s</text>
+<line class="grid" x1="281.6" x2="281.6" y1="58" y2="358"/>
+<text class="tick" x="281.6" y="374" text-anchor="middle">5M/s</text>
+<line class="grid" x1="323.2" x2="323.2" y1="58" y2="358"/>
+<text class="tick" x="323.2" y="374" text-anchor="middle">10M/s</text>
+<line class="grid" x1="364.8" x2="364.8" y1="58" y2="358"/>
+<text class="tick" x="364.8" y="374" text-anchor="middle">15M/s</text>
+<line class="grid" x1="406.5" x2="406.5" y1="58" y2="358"/>
+<text class="tick" x="406.5" y="374" text-anchor="middle">20M/s</text>
+<line class="grid" x1="448.1" x2="448.1" y1="58" y2="358"/>
+<text class="tick" x="448.1" y="374" text-anchor="middle">25M/s</text>
+<line class="grid" x1="489.7" x2="489.7" y1="58" y2="358"/>
+<text class="tick" x="489.7" y="374" text-anchor="middle">30M/s</text>
+<line class="grid" x1="531.3" x2="531.3" y1="58" y2="358"/>
+<text class="tick" x="531.3" y="374" text-anchor="middle">35M/s</text>
+<line class="grid" x1="572.9" x2="572.9" y1="58" y2="358"/>
+<text class="tick" x="572.9" y="374" text-anchor="middle">40M/s</text>
+<line class="grid" x1="614.5" x2="614.5" y1="58" y2="358"/>
+<text class="tick" x="614.5" y="374" text-anchor="middle">45M/s</text>
+<line class="grid" x1="656.1" x2="656.1" y1="58" y2="358"/>
+<text class="tick" x="656.1" y="374" text-anchor="middle">50M/s</text>
+<path style="fill:var(--s1)" d="M240,64 h47.5 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-47.5 z"><title>std::mutex + std::queue: 6.19M/s (min 6.12, max 6.45)</title></path>
+<line class="whisker" x1="290.9" x2="293.7" y1="75.0" y2="75.0"/>
+<text class="label" x="230" y="79.0" text-anchor="end" xml:space="preserve">std::mutex + std::queue</text>
+<text class="value" x="301.7" y="79.0">6.2M</text>
+<path style="fill:var(--s1)" d="M240,96 h192.1 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-192.1 z"><title>A0  SPSC baseline (unpadded): 23.57M/s (min 22.97, max 25.34)</title></path>
+<line class="whisker" x1="431.2" x2="450.9" y1="107.0" y2="107.0"/>
+<text class="label" x="230" y="111.0" text-anchor="end" xml:space="preserve">A0  SPSC baseline (unpadded)</text>
+<text class="value" x="458.9" y="111.0">23.6M</text>
+<path style="fill:var(--s1)" d="M240,128 h173.4 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-173.4 z"><title>A1  + index padding: 21.32M/s (min 20.12, max 22.25)</title></path>
+<line class="whisker" x1="407.4" x2="425.1" y1="139.0" y2="139.0"/>
+<text class="label" x="230" y="143.0" text-anchor="end" xml:space="preserve">A1  + index padding</text>
+<text class="value" x="433.1" y="143.0">21.3M</text>
+<path style="fill:var(--s1)" d="M240,160 h186.2 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-186.2 z"><title>A2  + cached indices (default): 22.86M/s (min 21.74, max 23.55)</title></path>
+<line class="whisker" x1="421.0" x2="436.0" y1="171.0" y2="171.0"/>
+<text class="label" x="230" y="175.0" text-anchor="end" xml:space="preserve">A2  + cached indices (default)</text>
+<text class="value" x="444.0" y="175.0">22.9M</text>
+<path style="fill:var(--s1)" d="M240,192 h189.4 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-189.4 z"><title>128-byte padding: 23.23M/s (min 21.99, max 24.00)</title></path>
+<line class="whisker" x1="423.0" x2="439.8" y1="203.0" y2="203.0"/>
+<text class="label" x="230" y="207.0" text-anchor="end" xml:space="preserve">      128-byte padding</text>
+<text class="value" x="447.8" y="207.0">23.2M</text>
+<path style="fill:var(--s1)" d="M240,224 h191.1 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-191.1 z"><title>A4  + consumer prefetch: 23.44M/s (min 22.33, max 23.85)</title></path>
+<line class="whisker" x1="425.9" x2="438.5" y1="235.0" y2="235.0"/>
+<text class="label" x="230" y="239.0" text-anchor="end" xml:space="preserve">A4  + consumer prefetch</text>
+<text class="value" x="446.5" y="239.0">23.4M</text>
+<path style="fill:var(--s1)" d="M240,256 h403.8 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-403.8 z"><title>A5  seq_cst everywhere: 48.99M/s (min 48.10, max 49.21)</title></path>
+<line class="whisker" x1="640.3" x2="649.5" y1="267.0" y2="267.0"/>
+<text class="label" x="230" y="271.0" text-anchor="end" xml:space="preserve">A5  seq_cst everywhere</text>
+<text class="value" x="657.5" y="271.0">49.0M</text>
+<path style="fill:var(--s1)" d="M240,288 h196.7 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-196.7 z"><title>A6  baseline on SMT siblings: 24.12M/s (min 23.98, max 25.81)</title></path>
+<line class="whisker" x1="439.6" x2="454.8" y1="299.0" y2="299.0"/>
+<text class="label" x="230" y="303.0" text-anchor="end" xml:space="preserve">A6  baseline on SMT siblings</text>
+<text class="value" x="462.8" y="303.0">24.1M</text>
+<path style="fill:var(--s1)" d="M240,320 h192.2 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-192.2 z"><title>A6  default on SMT siblings: 23.58M/s (min 23.43, max 24.49)</title></path>
+<line class="whisker" x1="435.0" x2="443.8" y1="331.0" y2="331.0"/>
+<text class="label" x="230" y="335.0" text-anchor="end" xml:space="preserve">A6  default on SMT siblings</text>
+<text class="value" x="451.8" y="335.0">23.6M</text>
+<line class="axis" x1="240" x2="240" y1="58" y2="358"/>
+</svg>

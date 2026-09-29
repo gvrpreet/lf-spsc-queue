@@ -1,0 +1,18 @@
+# tsc: 4.139 GHz, invariant=yes, rdtsc min delta=1 cycles, lfence+rdtsc=38 cycles (9.2 ns)
+requests          5000000 in 5.07 s (0.99 M/s offered)
+intake rejected   50269 (failed validation)
+enqueued          4949731  full_events=0 backpressure_rejects=0
+matcher applied   4949731  acks=3735415 rejects=1214316 (order not live)
+trades            3234547  traded_qty=82934086  resting_orders=17267
+latency intake->ack (ns): p50=184 p90=13174 p99=360238 p99.9=1260667 max=2555989
+accounting        OK (every enqueued event applied once)
+book invariants   OK (not crossed, levels consistent)
+# tsc: 4.079 GHz, invariant=yes, rdtsc min delta=1 cycles, lfence+rdtsc=38 cycles (9.3 ns)
+requests          5000000 in 0.33 s (15.05 M/s offered, unthrottled)
+intake rejected   50269 (failed validation)
+enqueued          4949730  full_events=5129 backpressure_rejects=1
+matcher applied   4949730  acks=3735415 rejects=1214315 (order not live)
+trades            3234542  traded_qty=82934017  resting_orders=17268
+latency intake->ack (ns): p50=2755436 p90=6302632 p99=8113630 p99.9=9000695 max=9094099
+accounting        OK (every enqueued event applied once)
+book invariants   OK (not crossed, levels consistent)
