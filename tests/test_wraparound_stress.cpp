@@ -74,9 +74,15 @@ int env_cpu(const char* name, int fallback) {
 template <typename Q>
 class WraparoundStress : public ::testing::Test {};
 
-using StressQueues =
-    ::testing::Types<spsc::SpscQueue<OrderEvent, 2>, spsc::SpscQueue<OrderEvent, 4>,
-                     spsc::SpscQueue<OrderEvent, 8>, spsc::MutexQueue<OrderEvent, 4>>;
+// Order matters: scripts/mutation_test.sh selects instances 0-3 (all SpscQueue code paths).
+using StressQueues = ::testing::Types<
+    spsc::SpscQueue<OrderEvent, 2>,                                       // 0: default, tiny
+    spsc::SpscQueue<OrderEvent, 4>,                                       // 1: default
+    spsc::SpscQueue<OrderEvent, 8>,                                       // 2: default
+    spsc::SpscQueue<OrderEvent, 4, spsc::kBaselineTuning>,                // 3: uncached path
+    spsc::SpscQueue<OrderEvent, 4, spsc::Tuning{.prefetch_next = true}>,  // 4
+    spsc::SpscQueue<OrderEvent, 4, spsc::Tuning{.seq_cst = true}>,        // 5
+    spsc::MutexQueue<OrderEvent, 4>>;                                     // 6: baseline
 TYPED_TEST_SUITE(WraparoundStress, StressQueues);
 
 // Scheduler decides placement; preemption lands at arbitrary points.

@@ -19,7 +19,13 @@ protected:
     std::unique_ptr<Q> q = std::make_unique<Q>();
 };
 
-using Queues = ::testing::Types<spsc::SpscQueue<OrderEvent, 8>, spsc::MutexQueue<OrderEvent, 8>>;
+using Queues = ::testing::Types<
+    spsc::SpscQueue<OrderEvent, 8>,                                            // default (tuned)
+    spsc::SpscQueue<OrderEvent, 8, spsc::kBaselineTuning>,                     // unpadded, uncached
+    spsc::SpscQueue<OrderEvent, 8, spsc::Tuning{.index_align = 128}>,          // 128-byte isolation
+    spsc::SpscQueue<OrderEvent, 8, spsc::Tuning{.prefetch_next = true}>,       // consumer prefetch
+    spsc::SpscQueue<OrderEvent, 8, spsc::Tuning{.seq_cst = true}>,             // seq_cst everywhere
+    spsc::MutexQueue<OrderEvent, 8>>;
 TYPED_TEST_SUITE(QueueContract, Queues);
 
 TYPED_TEST(QueueContract, StartsEmpty) {
