@@ -27,10 +27,18 @@ In the order pipeline, a request's median time from arrival at intake to
 acknowledgement (validation, queue hand-off, and order-book update) is **184 ns**
 at 1M requests/s. The matching thread sustains at least 15M requests/s.
 
+Replaying [lob-engine](https://github.com/gvrpreet/lob-engine) event logs through
+the queue into its order book, with one reader thread and one engine thread,
+reproduces the single-threaded book checksum and every counter exactly. That
+holds on a full Nasdaq AAPL day (2.0M events) and on 50M synthetic events, and the
+SPSC pipeline runs 2.6x faster than the mutex baseline on the latter
+([details](docs/results/lob_replay.md)).
+
 Latency is the median of three runs of 5M samples. Percentiles above p99 are
 dominated by WSL2 virtual-CPU scheduling and are not compared. Details:
 [ablations](docs/results/ablations.md), [bursty load](docs/results/burst.md),
-[pipeline](docs/results/pipeline.md).
+[pipeline](docs/results/pipeline.md), [wait strategies](docs/results/wait_strategies.md),
+[lob-engine replay](docs/results/lob_replay.md).
 
 ![Latency percentiles](docs/results/plots/latency_percentiles.svg)
 
@@ -105,7 +113,9 @@ behind one interface (`pop(queue, out)` for the consumer, `notify()` for the pro
 Parking uses a Dekker-style handshake with seq_cst fences on both sides, so a
 wake-up can never be lost. Mutation testing shows that removing either fence
 produces real lost wake-ups on x86, which ThreadSanitizer cannot detect. See
-[ADR-0003](docs/adr/0003-wait-strategy.md).
+[ADR-0003](docs/adr/0003-wait-strategy.md) and the
+[latency and CPU measurements](docs/results/wait_strategies.md): parking cuts an
+idle consumer to 7% of a core at a cost of about 12 µs of median wake-up latency.
 
 ## Usage
 
@@ -158,6 +168,10 @@ scripts/check_gates.sh                 # tests under debug, ThreadSanitizer, Add
 scripts/run_experiments.sh all         # every benchmark suite behind docs/results/
 scripts/mutation_test.sh               # mutation testing
 build/release/examples/order_pipeline/order_pipeline --requests=5000000 --rate=1000000
+
+# Optional: two-thread replay on lob-engine (checkout path, or -DSPSC_FETCH_LOB_ENGINE=ON)
+cmake --preset release -DSPSC_LOB_ENGINE_DIR=../lob-engine && cmake --build --preset release
+build/release/examples/lob_replay/spsc_lob_replay ../lob-engine/data/events_5000000.bin
 ```
 
 ## Repository layout
@@ -172,6 +186,7 @@ common/           platform helpers (TSC, CPU pinning)
 tests/            unit, stress, wait-strategy, and order-book tests (GoogleTest)
 bench/            latency, throughput, and bursty-load benchmarks
 examples/         order pipeline: intake -> queue -> matching engine
+                  lob_replay: lob-engine feed replay across two threads
 scripts/          gates, experiments, mutation testing, plotting
 docs/design/      design document
 docs/adr/         architecture decision records

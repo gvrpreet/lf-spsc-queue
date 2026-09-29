@@ -73,13 +73,42 @@ retries fell about 10x, the two cores stopped contending for the same lines, and
 throughput doubled. `seq_cst` is not faster in itself: it accidentally
 implements consumer back-off.
 
-*Status:* this explanation fits the retry counters and queue depths. The
-confirming experiment, sweeping an explicit consumer back-off
-(`bench_throughput --empty-backoff=N`) across all variants, is pending a quiet
-machine and will be recorded here. The practical conclusion does not depend on
-it: for throughput, the consumer should back off or batch when it finds the
-queue empty instead of hammering the producer's index. For latency,
-acquire/release with immediate re-checks remains the right default.
+*Test of this explanation:* if consumer contention is the bottleneck, making the
+consumer back off explicitly should recover the throughput under
+acquire/release. `bench_throughput --empty-backoff=N` makes the consumer execute
+N `pause` instructions each time it finds the queue empty. Median of three
+2-second runs, millions of events per second
+([`raw/20260929_072630_diag/`](raw/20260929_072630_diag/),
+`scripts/run_experiments.sh diag`):
+
+| Back-off (pauses) | A0 unpadded | A1 padded | Default (padded + cached) | `seq_cst` |
+|------------------:|------------:|----------:|--------------------------:|----------:|
+| 1 | 26.0 | 22.3 | 26.1 | 55.3 |
+| 8 | 29.7 | 28.7 | 29.4 | 57.1 |
+| 32 | 28.9 | 34.2 | 40.2 | 57.3 |
+| 128 | 36.6 | 35.5 | 41.0 | 57.7 |
+
+Empty retries per event for the default tuning fell from 0.72 to 0.019 across
+the sweep, and throughput rose by 57% (26.1 to 41.0). The contention mechanism
+is therefore real: reducing only the consumer's empty polls, with nothing else
+changed, buys a large part of the gap.
+
+It does not buy all of it. No acquire/release configuration reached the
+55–58 M/s of `seq_cst`, and their mean queue depth stayed at 300–850 events,
+against 32,800–35,500 for `seq_cst`. Back-off makes the consumer poll less
+often, but it is still faster than the producer, so the queue stays nearly
+empty. Under `seq_cst` the queue runs half full, and a consumer with tens of
+thousands of events in hand rarely needs to reload `head_`. The
+statement that "`seq_cst` accidentally implements consumer back-off" is
+therefore only partly right. The rest of the difference likely comes from the
+changed producer/consumer rate balance, which a pause-based back-off does not
+reproduce. Hardware counters (`perf stat`, `perf c2c`) on bare metal are the
+next step to separate the two effects.
+
+The practical conclusion stands: for throughput, the consumer should back off
+or batch when it finds the queue empty instead of hammering the producer's
+index. For latency, acquire/release with immediate re-checks remains the right
+default.
 
 **4. SMT placement shows no effect under WSL2.** Logical CPUs 2 and 3 are SMT
 siblings in the guest topology, but Hyper-V does not guarantee that the two vCPUs

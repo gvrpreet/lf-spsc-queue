@@ -1,0 +1,16 @@
+a0/backoff1  reps=3 seconds=2.0 cpus=2,4 | median=25.97 Mops/s min=25.25 max=26.12 consumer_cpu=107% | full_retries/op=0.000 empty_retries/op=0.144 mean_depth=564
+a1/backoff1  reps=3 seconds=2.0 cpus=2,4 | median=22.29 Mops/s min=21.89 max=25.75 consumer_cpu=107% | full_retries/op=0.000 empty_retries/op=0.468 mean_depth=638
+spsc/backoff1 reps=3 seconds=2.0 cpus=2,4 | median=26.10 Mops/s min=25.43 max=27.69 consumer_cpu=107% | full_retries/op=0.002 empty_retries/op=0.722 mean_depth=839
+seqcst/backoff1 reps=3 seconds=2.0 cpus=2,4 | median=55.25 Mops/s min=54.67 max=55.57 consumer_cpu=106% | full_retries/op=0.000 empty_retries/op=0.030 mean_depth=35531
+a0/backoff8  reps=3 seconds=2.0 cpus=2,4 | median=29.74 Mops/s min=27.62 max=30.08 consumer_cpu=105% | full_retries/op=0.000 empty_retries/op=0.072 mean_depth=796
+a1/backoff8  reps=3 seconds=2.0 cpus=2,4 | median=28.66 Mops/s min=26.42 max=30.58 consumer_cpu=107% | full_retries/op=0.001 empty_retries/op=0.126 mean_depth=732
+spsc/backoff8 reps=3 seconds=2.0 cpus=2,4 | median=29.39 Mops/s min=29.35 max=30.44 consumer_cpu=108% | full_retries/op=0.001 empty_retries/op=0.212 mean_depth=634
+seqcst/backoff8 reps=3 seconds=2.0 cpus=2,4 | median=57.10 Mops/s min=56.16 max=58.03 consumer_cpu=107% | full_retries/op=0.001 empty_retries/op=0.006 mean_depth=33093
+a0/backoff32 reps=3 seconds=2.0 cpus=2,4 | median=28.87 Mops/s min=28.55 max=30.11 consumer_cpu=106% | full_retries/op=0.000 empty_retries/op=0.031 mean_depth=638
+a1/backoff32 reps=3 seconds=2.0 cpus=2,4 | median=34.22 Mops/s min=30.57 max=36.15 consumer_cpu=106% | full_retries/op=0.001 empty_retries/op=0.045 mean_depth=390
+spsc/backoff32 reps=3 seconds=2.0 cpus=2,4 | median=40.21 Mops/s min=33.42 max=43.55 consumer_cpu=106% | full_retries/op=0.000 empty_retries/op=0.057 mean_depth=422
+seqcst/backoff32 reps=3 seconds=2.0 cpus=2,4 | median=57.29 Mops/s min=57.13 max=57.74 consumer_cpu=107% | full_retries/op=0.002 empty_retries/op=0.001 mean_depth=35048
+a0/backoff128 reps=3 seconds=2.0 cpus=2,4 | median=36.63 Mops/s min=35.91 max=36.97 consumer_cpu=107% | full_retries/op=0.000 empty_retries/op=0.014 mean_depth=336
+a1/backoff128 reps=3 seconds=2.0 cpus=2,4 | median=35.47 Mops/s min=32.58 max=37.46 consumer_cpu=107% | full_retries/op=0.000 empty_retries/op=0.014 mean_depth=435
+spsc/backoff128 reps=3 seconds=2.0 cpus=2,4 | median=40.95 Mops/s min=39.92 max=43.67 consumer_cpu=107% | full_retries/op=0.002 empty_retries/op=0.019 mean_depth=398
+seqcst/backoff128 reps=3 seconds=2.0 cpus=2,4 | median=57.66 Mops/s min=57.42 max=57.95 consumer_cpu=107% | full_retries/op=0.001 empty_retries/op=0.001 mean_depth=32759

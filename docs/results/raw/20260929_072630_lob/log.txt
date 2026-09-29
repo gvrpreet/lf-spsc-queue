@@ -1,0 +1,12 @@
+AAPL_20200130.bin single       events=1993687 trades=0 checksum=14650fb0739d0383 | 4.90 M events/s (median of 5)
+AAPL_20200130.bin spsc         events=1993687 trades=0 checksum=14650fb0739d0383 | 4.18 M events/s (-15% vs single) | identical to single-threaded replay
+AAPL_20200130.bin spsc-padded  events=1993687 trades=0 checksum=14650fb0739d0383 | 4.31 M events/s (-12% vs single) | identical to single-threaded replay
+AAPL_20200130.bin mutex        events=1993687 trades=0 checksum=14650fb0739d0383 | 2.36 M events/s (-52% vs single) | identical to single-threaded replay
+events_5000000.bin single       events=5000000 trades=3406476 checksum=01e9c2940a0e996f | 13.67 M events/s (median of 5)
+events_5000000.bin spsc         events=5000000 trades=3406476 checksum=01e9c2940a0e996f | 10.16 M events/s (-26% vs single) | identical to single-threaded replay
+events_5000000.bin spsc-padded  events=5000000 trades=3406476 checksum=01e9c2940a0e996f | 10.20 M events/s (-25% vs single) | identical to single-threaded replay
+events_5000000.bin mutex        events=5000000 trades=3406476 checksum=01e9c2940a0e996f | 3.66 M events/s (-73% vs single) | identical to single-threaded replay
+events_50000000.bin single       events=50000000 trades=29298045 checksum=e45d178766abc830 | 12.15 M events/s (median of 5)
+events_50000000.bin spsc         events=50000000 trades=29298045 checksum=e45d178766abc830 | 9.26 M events/s (-24% vs single) | identical to single-threaded replay
+events_50000000.bin spsc-padded  events=50000000 trades=29298045 checksum=e45d178766abc830 | 9.20 M events/s (-24% vs single) | identical to single-threaded replay
+events_50000000.bin mutex        events=50000000 trades=29298045 checksum=e45d178766abc830 | 3.58 M events/s (-71% vs single) | identical to single-threaded replay

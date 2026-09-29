@@ -9,6 +9,8 @@ Every file here is produced by a script in `scripts/`.
 |------|----------|-------------|
 | [`ablations.md`](ablations.md) | Every queue configuration vs. the mutex baseline: latency, throughput, analysis | `scripts/run_experiments.sh ablations` |
 | [`burst.md`](burst.md) | Bursty load, including bursts larger than the queue | `scripts/run_experiments.sh burst` |
+| [`wait_strategies.md`](wait_strategies.md) | Busy-spin vs. spin-then-yield vs. spin-then-park: latency and consumer CPU at three loads | `scripts/run_experiments.sh wait` |
+| [`lob_replay.md`](lob_replay.md) | Two-thread replay on lob-engine: bit-identical results, SPSC vs. mutex | `scripts/run_experiments.sh lob` |
 | [`pipeline.md`](pipeline.md) | End-to-end order pipeline (intake to acknowledgement) | `scripts/run_experiments.sh pipeline` |
 | [`mutation_testing.md`](mutation_testing.md) | Which injected bugs each verification method catches | `scripts/mutation_test.sh` |
 | [`baseline_vs_spsc.md`](baseline_vs_spsc.md) | First comparison, before the layout optimizations (historical) | `scripts/run_bench.sh` |
