@@ -145,3 +145,7 @@ docs/results/     benchmark and mutation-testing results
 | Wait strategies (busy-spin, spin/yield, spin/park) | In progress |
 | Bursty-load benchmark | Planned |
 | End-to-end order pipeline example | Planned |
+
+## License
+
+Released under the [MIT License](LICENSE).
