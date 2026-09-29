@@ -10,6 +10,11 @@ option(SPSC_BUILD_TESTS    "Build unit/stress tests"   ON)
 option(SPSC_BUILD_BENCH    "Build benchmarks"          ON)
 option(SPSC_BUILD_EXAMPLES "Build example pipeline"    ON)
 set(SPSC_SANITIZER "" CACHE STRING "Sanitizer: '', 'address', or 'thread'")
+# Optional integration with lob-engine (github.com/gvrpreet/lob-engine): replays its event logs
+# through the SPSC queue into its order book. Point SPSC_LOB_ENGINE_DIR at a checkout, or set
+# SPSC_FETCH_LOB_ENGINE=ON to download it.
+set(SPSC_LOB_ENGINE_DIR "" CACHE PATH "Path to a lob-engine source checkout (optional)")
+option(SPSC_FETCH_LOB_ENGINE "Fetch lob-engine from GitHub for examples/lob_replay" OFF)
 
 find_package(Threads REQUIRED)
 
@@ -47,4 +52,17 @@ if(SPSC_BUILD_BENCH)
 endif()
 if(SPSC_BUILD_EXAMPLES)
   add_subdirectory(examples/order_pipeline)
+
+  if(SPSC_LOB_ENGINE_DIR)
+    add_subdirectory(${SPSC_LOB_ENGINE_DIR} ${CMAKE_BINARY_DIR}/lob-engine EXCLUDE_FROM_ALL)
+  elseif(SPSC_FETCH_LOB_ENGINE)
+    include(FetchContent)
+    FetchContent_Declare(lob_engine
+      GIT_REPOSITORY https://github.com/gvrpreet/lob-engine.git
+      GIT_TAG d379fee19ac6f609265e1ca4aa591a92ec711c39)  # pinned for reproducibility
+    FetchContent_MakeAvailable(lob_engine)
+  endif()
+  if(TARGET lob::replay)
+    add_subdirectory(examples/lob_replay)
+  endif()
 endif()

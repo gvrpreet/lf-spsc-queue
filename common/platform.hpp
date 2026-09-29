@@ -56,6 +56,18 @@ inline bool pin_current_thread(int cpu) noexcept {
     return pthread_setaffinity_np(pthread_self(), sizeof(set), &set) == 0;
 }
 
+// Saves the calling thread's CPU affinity and restores it on destruction.
+class AffinityGuard {
+public:
+    AffinityGuard() noexcept { pthread_getaffinity_np(pthread_self(), sizeof(saved_), &saved_); }
+    ~AffinityGuard() { pthread_setaffinity_np(pthread_self(), sizeof(saved_), &saved_); }
+    AffinityGuard(const AffinityGuard&) = delete;
+    AffinityGuard& operator=(const AffinityGuard&) = delete;
+
+private:
+    cpu_set_t saved_{};
+};
+
 inline double thread_cpu_seconds() noexcept {
     timespec ts{};
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);

@@ -2,7 +2,7 @@
 # Runs the benchmark suites behind docs/results/. Each suite writes CSVs and a log to
 # docs/results/raw/<timestamp>_<suite>/.
 #
-# Usage: scripts/run_experiments.sh [ablations|diag|wait|burst|pipeline|all] ...
+# Usage: scripts/run_experiments.sh [ablations|diag|wait|burst|pipeline|lob|all] ...
 #
 # Nothing else CPU-heavy should run concurrently: the producer and consumer are
 # pinned (default CPUs 2 and 4, separate physical cores; CPU 3 is CPU 2's SMT sibling).
@@ -119,8 +119,25 @@ pipeline() {
   done
 }
 
+# Two-thread replay of lob-engine event logs (needs a release build configured with
+# -DSPSC_LOB_ENGINE_DIR or -DSPSC_FETCH_LOB_ENGINE=ON). LOB_DATA points at lob-engine's data/.
+lob_replay() {
+  local bin="build/release/examples/lob_replay/spsc_lob_replay"
+  local data="${LOB_DATA:-$HOME/projects/lob-engine/data}"
+  if [[ ! -x "$bin" ]]; then
+    echo "skipping lob: $bin not built (configure with -DSPSC_LOB_ENGINE_DIR=...)" >&2
+    return
+  fi
+  local d; d="$(suite_dir lob)"
+  for f in itch/AAPL_20200130.bin events_5000000.bin events_50000000.bin; do
+    [[ -f "$data/$f" ]] || { echo "skipping missing $data/$f" >&2; continue; }
+    "$bin" "$data/$f" --reps=5 --producer-cpu="$P" --consumer-cpu="$C" \
+      --csv="$d/lob_replay.csv" | tee -a "$d/log.txt"
+  done
+}
+
 suites=("$@")
-[[ ${#suites[@]} -eq 0 || ${suites[0]} == all ]] && suites=(ablations diag wait burst pipeline)
+[[ ${#suites[@]} -eq 0 || ${suites[0]} == all ]] && suites=(ablations diag wait burst pipeline lob)
 for s in "${suites[@]}"; do
   case "$s" in
     ablations) ablations ;;
@@ -128,6 +145,7 @@ for s in "${suites[@]}"; do
     wait) wait_strategies ;;
     burst) burst ;;
     pipeline) pipeline ;;
+    lob) lob_replay ;;
     *) echo "unknown suite: $s" >&2; exit 2 ;;
   esac
 done
