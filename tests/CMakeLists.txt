@@ -10,9 +10,10 @@ set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
-foreach(test_name test_spsc_basic test_wraparound_stress test_full_queue)
+foreach(test_name test_spsc_basic test_wraparound_stress test_full_queue test_wait_strategy test_order_book)
   add_executable(${test_name} ${test_name}.cpp)
   target_link_libraries(${test_name} PRIVATE spsc::spsc spsc_platform spsc_warnings GTest::gtest_main)
+  target_include_directories(${test_name} PRIVATE ${PROJECT_SOURCE_DIR}/examples/order_pipeline)
   if(SPSC_SANITIZER STREQUAL "thread")
     # Kernels with vm.mmap_rnd_bits=32 (e.g. WSL2 6.x) break GCC 13's TSan
     # ("unexpected memory mapping"). Running with ASLR disabled avoids it
